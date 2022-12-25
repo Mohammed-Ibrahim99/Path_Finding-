@@ -23,13 +23,14 @@ function refreshGrid(){
     createGrid(gridSize);
 };
 
-// create a 16x16 grid when the page loads
-// creates a hover effect that changes the color of a square to black when the mouse passes over it, leaving a (pixel) trail through the grid
+// create a 2x2 grid when the page loads
+// creates a hover effect that changes the color of a square to black when
+// the mouse passes over it, leaving a (pixel) trail through the grid
 // allows the click of a button to prompt the user to create a new grid
 $(document).ready(
 function() 
 {
-    createGrid(16);
+    createGrid(2);
 
     gridEvents();
 
@@ -40,6 +41,22 @@ function()
     });
 }
 );
+
+function findBlueGrids(sizeOfGrid)
+{
+    var blueSum = 0;
+    var grids = document.getElementsByClassName("grid");
+    for (var rows = 0; rows < sizeOfGrid; rows++) {
+
+            if(grids[rows].style.backgroundColor == "blue")
+            {
+                blueSum = blueSum + 1 ;
+            }
+            
+    };
+
+    return blueSum;
+}
 
 function gridEvents()
 {
@@ -70,6 +87,14 @@ function gridEvents()
         }
     )
     .click(function() {
+        numberOfBlueGrids = findBlueGrids(4);
+        console.log(numberOfBlueGrids);
+
+        if(numberOfBlueGrids == 2)
+        {
+            $(this).css("background-color", "white");
+        }
+
         var Current_grid_colour = $(this).css("background-color");
         //Check if colour is Blue
         if (Current_grid_colour == 'rgb(0, 0, 255)')
