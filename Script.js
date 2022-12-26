@@ -30,7 +30,7 @@ function refreshGrid(){
 $(document).ready(
 function() 
 {
-    createGrid(2);
+    createGrid(4);
 
     gridEvents();
 
@@ -42,11 +42,16 @@ function()
 }
 );
 
-function findBlueGrids(sizeOfGrid)
+function findBlueGrids()
 {
     var blueSum = 0;
+
+    //Retrieve all grids in the area, to check which grids are blue
     var grids = document.getElementsByClassName("grid");
-    for (var rows = 0; rows < sizeOfGrid; rows++) {
+
+    //loop through all the grids and check which of them has
+    //a blue colour
+    for (var rows = 0; rows < grids.length; rows++) {
 
             if(grids[rows].style.backgroundColor == "blue")
             {
@@ -61,6 +66,8 @@ function findBlueGrids(sizeOfGrid)
 function gridEvents()
 {
     $(".grid")
+    //Change the colour of the grid to black to indicate the cursor
+    //is hovering over it
     .mouseenter( function() 
         {
             var Current_grid_colour = $(this).css("background-color");
@@ -73,6 +80,8 @@ function gridEvents()
         $(this).css("background-color", "black");
         }
     )
+    //Change the colour of the grid back to white to indicate the mouse
+    //is no longer on it
     .mouseleave(function() 
         {
             var Current_grid_colour = $(this).css("background-color");
@@ -87,8 +96,8 @@ function gridEvents()
         }
     )
     .click(function() {
-        numberOfBlueGrids = findBlueGrids(4);
-        console.log(numberOfBlueGrids);
+        numberOfBlueGrids = findBlueGrids();
+
 
         if(numberOfBlueGrids == 2)
         {
@@ -108,4 +117,43 @@ function gridEvents()
         }
         
       });
+}
+
+function findPathBetweenBlueGrids()
+{
+    var startPosition = [-1, -1];
+    var endPosition = [-1, -1];
+
+    //Retrieve all grids in the area, to find the starting and ending points
+    var grids = document.getElementsByClassName("grid");
+
+    var rows = Math.sqrt(grids.length);
+    var columns = rows;
+    var element = 0;
+    //loop through all the grids and check which of them has
+    //a blue colour
+    for (var row = 0; row < rows; row++) 
+    {
+        for (var column = 0; column < columns; column++) 
+        {
+           if(grids[element].style.backgroundColor == "blue" && startPosition[1] == -1)
+            {
+                console.log(rows);
+                startPosition[0] = row;
+                startPosition[1] = column;
+            }
+            else if (grids[element].style.backgroundColor == "blue" )
+            {
+                endPosition[0] = row;
+                endPosition[1] = column;
+
+            }
+            element++;
+        }
+
+    }
+
+    console.log(startPosition);
+    console.log(endPosition);
+    
 }
