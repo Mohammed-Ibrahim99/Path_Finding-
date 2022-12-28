@@ -42,7 +42,7 @@ function()
 }
 );
 
-function findBlueGrids()
+function findBlueGridsNumber()
 {
     var blueSum = 0;
 
@@ -96,7 +96,7 @@ function gridEvents()
         }
     )
     .click(function() {
-        numberOfBlueGrids = findBlueGrids();
+        numberOfBlueGrids = findBlueGridsNumber();
 
 
         if(numberOfBlueGrids == 2)
@@ -119,7 +119,7 @@ function gridEvents()
       });
 }
 
-function findPathBetweenBlueGrids()
+function findBlueGridPositions()
 {
     var startPosition = [-1, -1];
     var endPosition = [-1, -1];
@@ -138,7 +138,6 @@ function findPathBetweenBlueGrids()
         {
            if(grids[element].style.backgroundColor == "blue" && startPosition[1] == -1)
             {
-                console.log(rows);
                 startPosition[0] = row;
                 startPosition[1] = column;
             }
@@ -153,7 +152,59 @@ function findPathBetweenBlueGrids()
 
     }
 
-    console.log(startPosition);
-    console.log(endPosition);
+    var positons = [startPosition, endPosition];
+    return positons;
     
+}
+
+function find_adjacent_nodes(starting_node, gridSize)
+{   
+    var nodes = []
+    switch(starting_node[0])
+    {
+        case 0:
+            break;
+        case gridSize:
+            break;
+
+        default: 
+            if(starting_node[1] != 0 && starting_node[1] != gridSize)
+            { 
+                nodes[0] = [(starting_node[0] - 1), (starting_node[1] - 1)];
+                nodes[1] = [(starting_node[0] - 1), (starting_node[1])];
+                nodes[2] = [(starting_node[0] - 1), (starting_node[1] + 1)];
+                nodes[3] = [(starting_node[0]), (starting_node[1] - 1)];
+                nodes[4] = [(starting_node[0]), (starting_node[1] + 1)];
+                nodes[5] = [(starting_node[0] + 1), (starting_node[1] - 1)];
+                nodes[6] = [(starting_node[0] + 1), (starting_node[1])];
+                nodes[7] = [(starting_node[0] + 1), (starting_node[1] + 1)];
+            }
+    }
+    console.log(starting_node);
+    console.log(nodes);
+    return 1;
+
+}
+
+function a_star_algorithm()
+{   
+    var positons;
+    positons = findBlueGridPositions();
+    var start = positons[0];
+    var end = positons[1];
+
+    var grids = document.getElementsByClassName("grid");
+    var gridSize = Math.sqrt(grids.length);
+
+    var green_nodes = find_adjacent_nodes(start, gridSize);
+    var red_nodes = [];
+
+
+    // current_node = green_nodes[0];
+
+    // while(current_node != end)
+    // {
+        
+
+    // }
 }
