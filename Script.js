@@ -164,11 +164,11 @@ function find_adjacent_nodes(starting_node, gridSize)
     {
         case 0:
             break;
-        case gridSize:
+        case gridSize - 1:
             break;
 
         default: 
-            if(starting_node[1] != 0 && starting_node[1] != gridSize)
+            if(starting_node[1] != 0 && starting_node[1] != gridSize - 1)
             { 
                 nodes[0] = [(starting_node[0] - 1), (starting_node[1] - 1)];
                 nodes[1] = [(starting_node[0] - 1), (starting_node[1])];
