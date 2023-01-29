@@ -111,9 +111,15 @@ function gridEvents()
             $(this).css("background-color", "white");
         }
         // In case colour is white turn Tile to blue
-        else if (Current_grid_colour == 'rgb(0, 0, 0)')
+        else if (Current_grid_colour == 'rgb(0, 0, 0)' && numberOfBlueGrids == 0)
         {
             $(this).css("background-color", "blue");
+            $(this).css("outline", "4px solid rgb(255, 0, 0)");
+        }
+        else if (Current_grid_colour == 'rgb(0, 0, 0)' && numberOfBlueGrids == 1)
+        {
+            $(this).css("background-color", "blue");
+            $(this).css("outline", "4px solid rgb(0, 255, 0)");
         }
         
       });
@@ -136,25 +142,28 @@ function findBlueGridPositions()
     {
         for (var column = 0; column < columns; column++) 
         {
-           if(grids[element].style.backgroundColor == "blue" && startPosition[1] == -1)
+           if(grids[element].style.backgroundColor == "blue")
             {
-                startPosition[0] = row;
-                startPosition[1] = column;
+                if (grids[element].style.outline == "rgb(255, 0, 0) solid 4px")
+                {
+                    startPosition[0] = row;
+                    startPosition[1] = column;
+                }
+                else
+                {
+                    endPosition[0] = row;
+                    endPosition[1] = column;
+    
+                }
             }
-            else if (grids[element].style.backgroundColor == "blue" )
-            {
-                endPosition[0] = row;
-                endPosition[1] = column;
 
-            }
             element++;
         }
 
     }
 
     var positons = [startPosition, endPosition];
-    return positons;
-    
+    return positons; 
 }
 
 function find_adjacent_nodes(starting_node, gridSize)
@@ -238,9 +247,27 @@ function find_adjacent_nodes(starting_node, gridSize)
                 nodes[4] = [(starting_node[0] + 1), (starting_node[1])];
             }
     }
-    console.log(starting_node);
-    console.log(nodes);
-    return 1;
+    return nodes;
+
+}
+
+function compute_costs(start, end, current)
+{
+    //distance of current node from starting node
+    var g_cost = Math.round(
+                            Math.sqrt((current[0] - start[0]) * (current[0] - start[0])
+                            + (current[1] - start[1]) * (current[1] - start[1])) * 10
+                            ); 
+    
+    //distance of current node from ending node
+    var h_cost = Math.round(
+                            Math.sqrt((current[0] - end[0]) * (current[0] - end[0])
+                            + (current[1] - end[1]) * (current[1] - end[1])) * 10
+                            ); 
+    // console.log("start" + start)
+    // console.log("end" + end)
+    // console.log(h_cost);
+
 
 }
 
@@ -257,6 +284,10 @@ function a_star_algorithm()
     var green_nodes = find_adjacent_nodes(start, gridSize);
     var red_nodes = [];
 
+    for(var nodes = 0; nodes < green_nodes.length; nodes++)
+    {
+        compute_costs(start, end, green_nodes[nodes]);
+    }
 
     // current_node = green_nodes[0];
 
