@@ -160,6 +160,7 @@ function findBlueGridPositions()
 function find_adjacent_nodes(starting_node, gridSize)
 {   
     var nodes = []
+    var edges = gridSize - 1;
     switch(starting_node[0])
     {
         case 0:
@@ -169,7 +170,7 @@ function find_adjacent_nodes(starting_node, gridSize)
                 nodes[1] = [(starting_node[0] + 1), (starting_node[1])];
                 nodes[2] = [(starting_node[0] + 1), (starting_node[1] + 1)];
             }
-            else if(starting_node[1] == gridSize - 1)
+            else if(starting_node[1] == edges)
             {
                 nodes[0] = [(starting_node[0]), (starting_node[1]) - 1];
                 nodes[1] = [(starting_node[0] + 1), (starting_node[1])];
@@ -185,14 +186,14 @@ function find_adjacent_nodes(starting_node, gridSize)
             }
             break;
 
-        case gridSize - 1:
+        case edges:
             if(starting_node[1] == 0)
             { 
                 nodes[0] = [(starting_node[0]) - 1, (starting_node[1])];
                 nodes[1] = [(starting_node[0] - 1), (starting_node[1] + 1)];
                 nodes[2] = [(starting_node[0]), (starting_node[1] + 1)];
             }
-            else if(starting_node[1] == gridSize - 1)
+            else if(starting_node[1] == edges)
             {
                 nodes[0] = [(starting_node[0]), (starting_node[1]) - 1];
                 nodes[1] = [(starting_node[0] - 1), (starting_node[1])];
@@ -209,7 +210,7 @@ function find_adjacent_nodes(starting_node, gridSize)
             break;
 
         default: 
-            if(starting_node[1] != 0 && starting_node[1] != gridSize - 1)
+            if(starting_node[1] != 0 && starting_node[1] != edges)
             { 
                 nodes[0] = [(starting_node[0] - 1), (starting_node[1] - 1)];
                 nodes[1] = [(starting_node[0] - 1), (starting_node[1])];
@@ -219,6 +220,22 @@ function find_adjacent_nodes(starting_node, gridSize)
                 nodes[5] = [(starting_node[0] + 1), (starting_node[1] - 1)];
                 nodes[6] = [(starting_node[0] + 1), (starting_node[1])];
                 nodes[7] = [(starting_node[0] + 1), (starting_node[1] + 1)];
+            }
+            else if(starting_node[1] == edges)
+            { 
+                nodes[0] = [(starting_node[0] - 1), (starting_node[1])];
+                nodes[1] = [(starting_node[0] - 1), (starting_node[1] - 1)];
+                nodes[2] = [(starting_node[0]), (starting_node[1] - 1)];
+                nodes[3] = [(starting_node[0] + 1), (starting_node[1] - 1)];
+                nodes[4] = [(starting_node[0] + 1), (starting_node[1])];
+            }
+            else if(starting_node[1] == 0)
+            { 
+                nodes[0] = [(starting_node[0] - 1), (starting_node[1])];
+                nodes[1] = [(starting_node[0] - 1), (starting_node[1] + 1)];
+                nodes[2] = [(starting_node[0]), (starting_node[1] + 1)];
+                nodes[3] = [(starting_node[0] + 1), (starting_node[1] + 1)];
+                nodes[4] = [(starting_node[0] + 1), (starting_node[1])];
             }
     }
     console.log(starting_node);
