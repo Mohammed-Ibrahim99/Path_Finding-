@@ -72,7 +72,7 @@ function gridEvents()
         {
             var Current_grid_colour = $(this).css("background-color");
             //Check if colour is Blue
-            if (Current_grid_colour == 'rgb(0, 0, 255)')
+            if (Current_grid_colour == 'rgb(0, 0, 255)' || Current_grid_colour == 'rgb(0, 128, 0)')
             {
                 return;
             }
@@ -86,7 +86,7 @@ function gridEvents()
         {
             var Current_grid_colour = $(this).css("background-color");
             //Check if colour is Blue
-            if (Current_grid_colour == 'rgb(0, 0, 255)')
+            if (Current_grid_colour == 'rgb(0, 0, 255)' || Current_grid_colour == 'rgb(0, 128, 0)')
             {
                 return;
             }
@@ -266,8 +266,9 @@ function compute_costs(start, end, current)
                             ); 
     // console.log("start" + start)
     // console.log("end" + end)
-    // console.log(h_cost);
-
+    // console.log(g_cost + h_cost);
+    
+    return g_cost + h_cost;
 
 }
 
@@ -281,19 +282,56 @@ function a_star_algorithm()
     var grids = document.getElementsByClassName("grid");
     var gridSize = Math.sqrt(grids.length);
 
-    var green_nodes = find_adjacent_nodes(start, gridSize);
+    var green_nodes = [];
     var red_nodes = [];
 
-    for(var nodes = 0; nodes < green_nodes.length; nodes++)
+
+    var f_costs = [];
+    var current_node = positons[0];
+
+    var rows = Math.sqrt(grids.length);
+    var columns = rows;
+
+    while(current_node[0] != end[0] && current_node[1] != end[1])
     {
-        compute_costs(start, end, green_nodes[nodes]);
-    }
+        
+        green_nodes = find_adjacent_nodes(current_node, gridSize);
+        var new_node_index = 0;
+        f_costs = [];
 
-    // current_node = green_nodes[0];
+        for(var nodes = 0; nodes < green_nodes.length; nodes++)
+        {     
+            f_costs[nodes] = compute_costs(start, end, green_nodes[nodes]);
+        }
 
-    // while(current_node != end)
-    // {
+        var value = f_costs[0];
+        for (var i = 0; i < f_costs.length; i++) 
+        {
+            if (f_costs[i] < value) 
+            {
+              value = f_costs[i];
+              new_node_index = i;
+            }
+        }
+
+        current_node = green_nodes[new_node_index];
         
 
-    // }
+        var element = 0;
+        for (var row = 0; row < rows; row++) 
+        {
+            for (var column = 0; column < columns; column++) 
+            {
+               if(current_node[0] == row && current_node[1] == column)
+                {
+                    grids[element].style.backgroundColor = "green"
+                    console.log(element);
+                }
+                
+                element++;
+            }
+    
+        }
+
+    }
 }
