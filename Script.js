@@ -295,8 +295,8 @@ function a_star_algorithm()
     while(current_node[0] != end[0] && current_node[1] != end[1])
     {
         
-        green_nodes = find_adjacent_nodes(current_node, gridSize);
-        var new_node_index = 0;
+        green_nodes.push(find_adjacent_nodes(current_node, gridSize));
+        var lowest_f_cost_node = 0;
         f_costs = [];
 
         for(var nodes = 0; nodes < green_nodes.length; nodes++)
@@ -310,12 +310,24 @@ function a_star_algorithm()
             if (f_costs[i] < value) 
             {
               value = f_costs[i];
-              new_node_index = i;
+              lowest_f_cost_node = i;
             }
         }
 
-        current_node = green_nodes[new_node_index];
+        current_node = green_nodes[lowest_f_cost_node];
+        green_nodes = green_nodes.splice(lowest_f_cost_node, 1);
+        red_nodes.push(current_node); 
         
+        var current_node_neighbours = find_adjacent_nodes(current_node, gridSize);
+
+        for(var neighbour=0; neighbour<current_node_neighbours.length; neighbour++)
+        {   
+            //Non-tranversable neighbours (barriers) or neighbours in closed node
+            if (neighbour.style.backgroundColor == "green" || neighbour)
+            {
+
+            }
+        }
 
         var element = 0;
         for (var row = 0; row < rows; row++) 
@@ -334,4 +346,10 @@ function a_star_algorithm()
         }
 
     }
+}
+
+//Function to check if a node is available in the red nodes
+function exists(nodes, node_to_find) 
+{
+    return nodes.some(row => row.includes(node_to_find));
 }
