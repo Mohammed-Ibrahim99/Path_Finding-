@@ -267,8 +267,7 @@ function compute_costs(start, end, current)
     // console.log("start" + start)
     // console.log("end" + end)
     // console.log(g_cost + h_cost);
-    
-    return g_cost + h_cost;
+    return [g_cost, h_cost];
 
 }
 
@@ -292,30 +291,34 @@ function a_star_algorithm()
     var rows = Math.sqrt(grids.length);
     var columns = rows;
 
-    while(current_node[0] != end[0] && current_node[1] != end[1])
-    {
-        
-        green_nodes.push(find_adjacent_nodes(current_node, gridSize));
-        var lowest_f_cost_node = 0;
-        f_costs = [];
+    green_nodes[0] = [current_node[0], current_node[1]];
 
+    while(current_node[0] != end[0] && current_node[1] != end[1])
+    {   
+        
+        console.log(green_nodes);
         for(var nodes = 0; nodes < green_nodes.length; nodes++)
         {     
-            f_costs[nodes] = compute_costs(start, end, green_nodes[nodes]);
+            green_nodes[nodes][2] = compute_costs(start, end, green_nodes[nodes])[0];
+            green_nodes[nodes][3] = compute_costs(start, end, green_nodes[nodes])[1];
         }
+        
+        current_node[0] = end[0];
+        current_node[1] = end[1];
 
-        var value = f_costs[0];
-        for (var i = 0; i < f_costs.length; i++) 
+        var lowest_f_cost_value = green_nodes[0][2];
+        var lowest_f_cost_index = 0;
+        for (var i = 0; i < green_nodes.length; i++) 
         {
-            if (f_costs[i] < value) 
+            if ((green_nodes[i][2] + green_nodes[i][3]) < lowest_f_cost_value) 
             {
-              value = f_costs[i];
-              lowest_f_cost_node = i;
+              lowest_f_cost_value = (green_nodes[i][2] + green_nodes[i][3]);
+              lowest_f_cost_index = i;
             }
         }
 
-        current_node = green_nodes[lowest_f_cost_node];
-        green_nodes = green_nodes.splice(lowest_f_cost_node, 1);
+        current_node = green_nodes[lowest_f_cost_index];
+        green_nodes = green_nodes.splice(lowest_f_cost_index, 1);
         red_nodes.push(current_node); 
         
         var current_node_neighbours = find_adjacent_nodes(current_node, gridSize);
@@ -323,32 +326,40 @@ function a_star_algorithm()
         for(var neighbour=0; neighbour<current_node_neighbours.length; neighbour++)
         {   
             //Non-tranversable neighbours (barriers) or neighbours in closed node
-            if (neighbour.style.backgroundColor == "green" || neighbour)
+            if (neighbour.style.backgroundColor == "green" || exists(red_nodes,neighbour))
+            {
+                continue;
+            }
+
+            if(!exists(green_nodes, neighbour))
             {
 
             }
+
         }
 
-        var element = 0;
-        for (var row = 0; row < rows; row++) 
-        {
-            for (var column = 0; column < columns; column++) 
-            {
-               if(current_node[0] == row && current_node[1] == column)
-                {
-                    grids[element].style.backgroundColor = "green"
-                    console.log(element);
-                }
+        // var element = 0;
+        // for (var row = 0; row < rows; row++) 
+        // {
+        //     for (var column = 0; column < columns; column++) 
+        //     {
+        //        if(current_node[0] == row && current_node[1] == column)
+        //         {
+        //             grids[element].style.backgroundColor = "green"
+        //             console.log(element);
+        //         }
                 
-                element++;
-            }
+        //         element++;
+        //     }
     
-        }
+        // }
 
     }
 }
 
 //Function to check if a node is available in the red nodes
+//Returns true or false
+//https://stackoverflow.com/questions/48538162/how-to-check-if-a-two-dimensional-array-includes-a-string
 function exists(nodes, node_to_find) 
 {
     return nodes.some(row => row.includes(node_to_find));
