@@ -286,75 +286,94 @@ function a_star_algorithm()
 
 
     var f_costs = [];
-    var current_node = positons[0];
 
     var rows = Math.sqrt(grids.length);
     var columns = rows;
 
-    green_nodes[0] = [current_node[0], current_node[1]];
+    green_nodes[0] = start;
 
-    while(current_node[0] != end[0] && current_node[1] != end[1])
+    while(green_nodes.length > 0)
     {   
-        
-        console.log(green_nodes);
-        for(var nodes = 0; nodes < green_nodes.length; nodes++)
-        {     
+
+        // var lowest_f_cost_value = green_nodes[0][2];
+        // var lowest_f_cost_index = 0;
+        // for (var i = 0; i < green_nodes.length; i++) 
+        // {
+        //     if ((green_nodes[i][2] + green_nodes[i][3]) < lowest_f_cost_value) 
+        //     {
+        //       lowest_f_cost_value = (green_nodes[i][2] + green_nodes[i][3]);
+        //       lowest_f_cost_index = i;
+        //     }
+        // }
+        // current_node = green_nodes[lowest_f_cost_index];
+        // green_nodes = green_nodes.splice(lowest_f_cost_index, 1);
+        // red_nodes.push(current_node); 
+
+        //store g_cost and h_cost for each node as positions 2 and 3 for each node
+        for(var i=0; i<green_nodes.length; i++)
+        {
+            //g_cost
             green_nodes[nodes][2] = compute_costs(start, end, green_nodes[nodes])[0];
+            //h_cost
             green_nodes[nodes][3] = compute_costs(start, end, green_nodes[nodes])[1];
         }
-        
-        current_node[0] = end[0];
-        current_node[1] = end[1];
 
-        var lowest_f_cost_value = green_nodes[0][2];
-        var lowest_f_cost_index = 0;
-        for (var i = 0; i < green_nodes.length; i++) 
+
+        var current_node = green_nodes[0];
+        var current_node_fcost = current_node[0][2] + current_node[0][3];
+        var node_to_remove = 0;
+
+        for(var i = 1; i<green_nodes.length; i++)
         {
-            if ((green_nodes[i][2] + green_nodes[i][3]) < lowest_f_cost_value) 
+            var green_h_cost = green_nodes[i][3];
+            var green_f_cost = (green_nodes[i][2] + green_h_cost);
+
+            if(green_f_cost < current_node_fcost || open_f_cost == current_node_fcost && green_h_cost < current_node[0][3])
             {
-              lowest_f_cost_value = (green_nodes[i][2] + green_nodes[i][3]);
-              lowest_f_cost_index = i;
+                current_node = green_nodes[0];
+                node_to_remove = i;
             }
         }
 
-        current_node = green_nodes[lowest_f_cost_index];
-        green_nodes = green_nodes.splice(lowest_f_cost_index, 1);
-        red_nodes.push(current_node); 
+        //Remove current node from green node list
+        //Add current node to red node list
+        red_nodes.push(green_nodes.splice(node_to_remove, 1));
         
-        var current_node_neighbours = find_adjacent_nodes(current_node, gridSize);
+        //If path has been found, exit out of the loop
+        if(current_node[0] == end[0] && current_node[1] == end[1])
+        {
+            return;
+        }
 
-        for(var neighbour=0; neighbour<current_node_neighbours.length; neighbour++)
-        {   
-            //Non-tranversable neighbours (barriers) or neighbours in closed node
-            if (neighbour.style.backgroundColor == "green" || exists(red_nodes,neighbour))
+        var neighbouring_nodes = find_adjacent_nodes(current_node, gridSize);
+
+        for(var neighbours = 0; neighbours<neighbouring_nodes.length; neighbours++)
+        {
+            if(!grids[element].style.backgroundColor == "rgb(255, 0, 0)" || arrayAlreadyHasArray(red_nodes, neighbours))
             {
                 continue;
             }
 
-            if(!exists(green_nodes, neighbour))
-            {
-
-            }
-
         }
 
-        // var element = 0;
-        // for (var row = 0; row < rows; row++) 
-        // {
-        //     for (var column = 0; column < columns; column++) 
-        //     {
-        //        if(current_node[0] == row && current_node[1] == column)
-        //         {
-        //             grids[element].style.backgroundColor = "green"
-        //             console.log(element);
-        //         }
-                
-        //         element++;
-        //     }
-    
-        // }
 
     }
+}
+
+//Explanation to add later, for now explanation here
+https://www.youtube.com/watch?v=mZfyt03LDH4&t=369s
+function getDistanceBetweenNodes(nodeA, nodeB)
+{
+    var distance_x = Math.abs(nodeA[0] - nodeB[0]);
+    var distance_y = Math.abs(nodeA[1] - nodeB[1]);
+
+    if(distance_x > distance_y)
+    {
+        return (14 * distance_y) + 10 * (distance_x - distance_y);
+    }
+
+    return (14 * distance_x) + 10 * (distance_y - distance_x);
+
 }
 
 //Function to check if a node is available in the red nodes
@@ -363,4 +382,24 @@ function a_star_algorithm()
 function exists(nodes, node_to_find) 
 {
     return nodes.some(row => row.includes(node_to_find));
+}
+
+//Simple check for finding if an array exists within 2D array
+https://betterprogramming.pub/check-if-an-array-is-within-a-2d-array-using-javascript-c534d96cb269
+function arrayAlreadyHasArray(arr, subarr){
+    for(var i = 0; i<arr.length; i++){
+        let checker = false
+        for(var j = 0; j<arr[i].length; j++){
+            if(arr[i][j] === subarr[j]){
+                checker = true
+            } else {
+                checker = false
+                break;
+            }
+        }
+        if (checker){
+            return true
+        }
+    }
+    return false
 }
