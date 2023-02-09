@@ -291,6 +291,7 @@ function a_star_algorithm()
     var columns = rows;
 
     green_nodes[0] = start;
+    var parent_node = [];
 
     while(green_nodes.length > 0)
     {   
@@ -310,7 +311,7 @@ function a_star_algorithm()
         // red_nodes.push(current_node); 
 
         //store g_cost and h_cost for each node as positions 2 and 3 for each node
-        for(var i=0; i<green_nodes.length; i++)
+        for(var nodes=0; nodes<green_nodes.length; nodes++)
         {
             //g_cost
             green_nodes[nodes][2] = compute_costs(start, end, green_nodes[nodes])[0];
@@ -346,17 +347,36 @@ function a_star_algorithm()
         }
 
         var neighbouring_nodes = find_adjacent_nodes(current_node, gridSize);
-
         for(var neighbours = 0; neighbours<neighbouring_nodes.length; neighbours++)
         {
-            if(!grids[element].style.backgroundColor == "rgb(255, 0, 0)" || arrayAlreadyHasArray(red_nodes, neighbours))
+            if(arrayAlreadyHasArray(red_nodes, neighbouring_nodes[neighbours]))
             {
                 continue;
             }
 
+            var newMovementCost = current_node[0][2] + getDistanceBetweenNodes(current_node, neighbouring_nodes[neighbours]);
+            //console.log(neighbouring_nodes[neighbours]);
+            if(newMovementCost < neighbouring_nodes[neighbours][2] || !arrayAlreadyHasArray(green_nodes, neighbouring_nodes[neighbours]))
+            {
+                neighbouring_nodes[neighbours][2] = newMovementCost;
+                neighbouring_nodes[neighbours][3] = Math.round(
+                    Math.sqrt((neighbouring_nodes[neighbours][0] - end[0]) * (neighbouring_nodes[neighbours][0] - end[0])
+                    + (neighbouring_nodes[neighbours][1] - end[1]) * (neighbouring_nodes[neighbours][1] - end[1])) * 10
+                    );
+
+                parent_node = current_node;
+
+                if(!arrayAlreadyHasArray(green_nodes, parent_node))
+                {
+                    green_nodes.push(parent_node);
+                }
+
+                
+            }
+
         }
 
-
+        console.log(green_nodes);
     }
 }
 
