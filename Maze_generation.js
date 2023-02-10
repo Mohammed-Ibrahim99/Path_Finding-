@@ -50,6 +50,37 @@ class Maze
 
         }
 
+        let next = current.checkNeighbours();
+
+        if(next)
+        {
+            next.visited = true;
+
+            this.stack.push(current);
+
+            current.highlight(this.columns);
+
+            current.removeWalls(current, next);
+
+            current = next;
+        }
+        else if(this.stack.length > 0)
+        {
+            let cell = this.stack.pop();
+            current = cell;
+            current.highlight(this.columns);
+
+        }
+
+        if(this.stack.length == 0)
+        {
+            return;
+        }
+
+        window.requestAnimationFrame(()=>{
+            this.draw();
+        })
+
     }
 }
 
@@ -81,7 +112,27 @@ class Cell
         let col = this.colNumber;
         let neighbours = [];
 
-        
+        let top = row !== 0 ? grid[row-1][col]: undefined;
+        let right = col !== grid.length - 1 ? grid[row][col + 1]: undefined;
+        let bottom = row !== grid.length - 1 ? grid[row + 1][col]: undefined;
+        let left = col !== 0 ? grid[row][col - 1]: undefined;
+
+        if(top && !top.visited) neighbours.push(top);
+        if(right && !right.visited) neighbours.push(right);
+        if(bottom && !bottom.visited) neighbours.push(bottom);
+        if(left && !left.visited) neighbours.push(left);
+
+
+        if(neighbours.length !== 0)
+        {
+            let random = Math.floor(Math.random() * neighbours.length);
+            return neighbours[random];
+        }
+        else
+        {
+            return undefined;
+        }
+
     }
 
 
@@ -152,7 +203,47 @@ class Cell
             ctx.lineTo(x, y + size/rows);
             ctx.stroke();
         }
-    
+        
+        highlight(columns)
+        {
+            let x = this.colNumber * this.parentSize/columns + 1;
+            let y = this.rowNumber * this.parentSize/columns + 1;
+
+            ctx.fillStyle = "purple";
+            ctx.fillRect(x, y, this.parentSize/columns - 3, this.parentSize/columns - 3);
+
+        }
+
+        removeWalls(cell_1, cell_2)
+        {
+            let x = cell_1.colNumber - cell_2.colNumber;
+
+            if(x == 1)
+            {
+                cell_1.walls.leftWall = false;
+                cell_2.walls.rightWall = false;
+            }
+            else if (x == -1)
+            {
+                cell_1.walls.rightWall = false;
+                cell_2.walls.leftWall = false;
+            }
+
+            let y = cell_1.rowNumber - cell_2.rowNumber;
+
+            if(y == 1)
+            {
+                cell_1.walls.topWall = false;
+                cell_2.walls.bottomWall = false;
+            }
+            else if (x == -1)
+            {
+                cell_1.walls.bottomWall = false;
+                cell_2.walls.topWall = false;
+            }
+
+        }
+
         show(size, rows, columns)
         {
             let x = (this.colNumber * size) / columns;
