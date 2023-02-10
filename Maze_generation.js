@@ -236,7 +236,7 @@ class Cell
                 cell_1.walls.topWall = false;
                 cell_2.walls.bottomWall = false;
             }
-            else if (x == -1)
+            else if (y == -1)
             {
                 cell_1.walls.bottomWall = false;
                 cell_2.walls.topWall = false;
@@ -265,6 +265,6 @@ class Cell
         }
 }
 
-let newMaze = new Maze(500, 10, 10);
+let newMaze = new Maze(600, 25, 25);
 newMaze.setup();
 newMaze.draw();
