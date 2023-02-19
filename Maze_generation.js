@@ -43,8 +43,6 @@ class Maze
         this.end = this.grid[this.rows - 1][this.getRandomInt(this.columns - 1)];
         this.end.walls.bottomWall = false;
 
-        console.log(this.end, this.start);
-
     }
 
     draw()
@@ -108,6 +106,8 @@ class Cell
         this.colNumber = colNumber;
         this.parentGrid = parentGrid;
         this.parentSize = parentSize;
+        this.h_cost = 0;
+        this.g_cost = 0;
         
         this.visited = false; //Used for checking if a cell has been added to stack or not
         
@@ -119,6 +119,11 @@ class Cell
             leftWall: true
         };
 
+    }
+
+    fcost()
+    {
+        return this.f_cost = parseInt(this.h_cost) + parseInt(this.g_cost);
     }
     
     checkNeighbours()
@@ -281,6 +286,52 @@ class Cell
         }
 }
 
+class astar
+{
+    constructor(maze)
+    {
+        this.grid = maze.grid;
+        this.start =  maze.start;
+        this.end = maze.end;
+        this.current;
+        
+
+        this.open_set = [];
+        this.closed_set = [];
+        console.log(this.start.fcost());
+
+    }
+
+    findPath()
+    {
+        this.open_set.push(this.start);
+
+        while(this.open_set.length == 0)
+        {   
+            this.current = this.open_set[0];
+            let index = 0;
+            for(let i=1; i<this.open_set.length; i++)
+            {
+                if(this.open_set[i].f_cost() < this.current.f_cost() || 
+                   this.open_set[i].f_cost() == this.current.f_cost() && this.open_set[i].h_cost < this.current.h_cost)
+                {
+                    this.current = this.open_set[i];
+                    index = i;
+                }
+            }
+
+            this.open_set = this.open_set.splice(index, 1);
+            this.closed_set.push(this.current);
+
+            
+
+        }
+
+    }
+
+}
+
 let newMaze = new Maze(600, 10, 10);
 newMaze.setup();
 newMaze.draw();
+let pathfind = new astar(newMaze); 
