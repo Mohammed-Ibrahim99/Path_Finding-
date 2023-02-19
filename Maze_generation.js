@@ -14,6 +14,13 @@ class Maze
         this.columns = columns;
         this.grid = [];
         this.stack = [];
+        this.start;
+        this.end;
+    }
+
+    getRandomInt(max) 
+    {
+        return Math.floor(Math.random() * max);
     }
 
     //Generate maze structure
@@ -30,13 +37,21 @@ class Maze
             this.grid.push(row);
         }
         current = this.grid[0][0];
+        this.start = this.grid[0][this.getRandomInt(this.columns - 1)];
+        this.start.walls.topWall = false;
+
+        this.end = this.grid[this.rows - 1][this.getRandomInt(this.columns - 1)];
+        this.end.walls.bottomWall = false;
+
+        console.log(this.end, this.start);
+
     }
 
     draw()
     {
         maze.width = this.size;
         maze.height = this.size;
-        maze.style.background = "black";
+        maze.style.background = "white";
 
         current.visited = true;
 
@@ -52,6 +67,7 @@ class Maze
 
         let next = current.checkNeighbours();
 
+        
         if(next)
         {
             next.visited = true;
@@ -249,8 +265,8 @@ class Cell
             let x = (this.colNumber * size) / columns;
             let y = (this.rowNumber * size) / rows;
 
-            ctx.strokeStyle = "white";
-            ctx.fillStyle = "black";
+            ctx.strokeStyle = "black";
+            ctx.fillStyle = "white";
             ctx.lineWidth = 2;
 
             if (this.walls.topWall) this.drawTopWall(x, y, size, columns, rows);
@@ -265,6 +281,6 @@ class Cell
         }
 }
 
-let newMaze = new Maze(600, 25, 25);
+let newMaze = new Maze(600, 10, 10);
 newMaze.setup();
 newMaze.draw();
