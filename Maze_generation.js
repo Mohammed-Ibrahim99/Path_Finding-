@@ -108,6 +108,7 @@ class Cell
         this.parentSize = parentSize;
         this.h_cost = 0;
         this.g_cost = 0;
+        this.walkable = false;
         
         this.visited = false; //Used for checking if a cell has been added to stack or not
         
@@ -143,16 +144,16 @@ class Cell
         if(bottom && !bottom.visited) neighbours.push(bottom);
         if(left && !left.visited) neighbours.push(left);
 
-
-        if(neighbours.length !== 0)
-        {
-            let random = Math.floor(Math.random() * neighbours.length);
-            return neighbours[random];
-        }
-        else
-        {
-            return undefined;
-        }
+            if(neighbours.length !== 0)
+            {
+                let random = Math.floor(Math.random() * neighbours.length);
+                return neighbours[random];
+            }
+            else
+            {
+                return undefined;
+            }
+        
 
     }
 
@@ -295,10 +296,88 @@ class astar
         this.end = maze.end;
         this.current;
         
-
+        this.rows = maze.rows;
+        this.cols = maze.columns;
+        
         this.open_set = [];
         this.closed_set = [];
-        console.log(this.start.fcost());
+
+    }
+
+    getNeighbours(node)
+    {
+        let neighbours = [];
+
+        for (let x=-1; x<=1; x++)
+        {
+            for (let y=-1; y<=1; y++)
+            {
+                if(x==0 && y==0)
+                {
+                    continue;
+                }
+
+                let checkX = node.colNumber + x;
+                let checkY = node.rowNumber + y;
+
+                if(checkX >=0 && checkX < this.cols && checkY >=0 && checkY < this.rows)
+                {
+                    neighbours.push(this.grid[checkX][checkY]);
+                }
+            }
+        }
+
+        return neighbours;
+    }
+
+    check_if_walkable(node)
+    {
+        let neighbours = [];
+
+        for (let x=-1; x<=1; x++)
+        {
+            for (let y=-1; y<=1; y++)
+            {
+                if(x==0 && y==0)
+                {
+                    continue;
+                }
+
+                let checkX = node.colNumber + x;
+                let checkY = node.rowNumber + y;
+
+                if(node.walls.topWall == false)
+                {
+                    this.grid[checkX][checkY].walkable = true;
+                    neighbours.push(this.grid[checkX][checkY]);
+                    continue;
+                }
+                if(node.walls.bottomWall == false)
+                {
+                    this.grid[checkX][checkY].walkable = true;
+                    neighbours.push(this.grid[checkX][checkY]);
+                    continue;
+                }
+                if(node.walls.topWall == false)
+                {
+                    this.grid[checkX][checkY].walkable = true;
+                    neighbours.push(this.grid[checkX][checkY]);
+                    continue;
+                }
+                if(node.walls.topWall == false)
+                {
+                    this.grid[checkX][checkY].walkable = true;
+                    neighbours.push(this.grid[checkX][checkY]);
+                    continue;
+                }
+
+                    
+                    
+            }
+        }
+
+        console.log(neighbours);
+        return neighbours;
 
     }
 
@@ -306,7 +385,7 @@ class astar
     {
         this.open_set.push(this.start);
 
-        while(this.open_set.length == 0)
+        while(this.open_set.length != 0)
         {   
             this.current = this.open_set[0];
             let index = 0;
@@ -323,6 +402,17 @@ class astar
             this.open_set = this.open_set.splice(index, 1);
             this.closed_set.push(this.current);
 
+            if(this.current.rowNumber == this.end.rowNumber && this.current.colNumber == this.end.colNumber)
+            {
+                return;
+            }
+
+            neighbours = this.getNeighbours(this.current);
+
+            for(let neighbour=0; neighbour<neighbour.length; neighbour++)
+            {
+
+            }
             
 
         }
@@ -335,3 +425,4 @@ let newMaze = new Maze(600, 10, 10);
 newMaze.setup();
 newMaze.draw();
 let pathfind = new astar(newMaze); 
+
