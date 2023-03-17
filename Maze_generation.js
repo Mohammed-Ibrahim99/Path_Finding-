@@ -334,49 +334,67 @@ class astar
     {
         let neighbours = [];
 
-        for (let x=-1; x<=1; x++)
+        console.log(node);
+        let x = node.colNumber;
+        let y = node.rowNumber;
+
+        if(node.walls.topWall == false)
         {
-            for (let y=-1; y<=1; y++)
+            console.log("Top Wall False");
+            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
             {
-                if(x==0 && y==0)
+                if(this.grid[x-1][y].walls.bottomWall == false)
                 {
-                    continue;
+                    console.log(x - 1, y);
+                    neighbours.push(this.grid[x-1][y-1]);
                 }
+            }
 
-                let checkX = node.colNumber + x;
-                let checkY = node.rowNumber + y;
-
-                if(node.walls.topWall == false)
+        }
+        if(node.walls.bottomWall == false)
+        {
+            console.log("Bottom Wall False");
+            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
+            {
+                if(this.grid[x+1][y].walls.topWall == false)
                 {
-                    this.grid[checkX][checkY].walkable = true;
-                    neighbours.push(this.grid[checkX][checkY]);
-                    continue;
+                    console.log(x + 1, y);
+                    neighbours.push(this.grid[x+1][y]);
                 }
-                if(node.walls.bottomWall == false)
-                {
-                    this.grid[checkX][checkY].walkable = true;
-                    neighbours.push(this.grid[checkX][checkY]);
-                    continue;
-                }
-                if(node.walls.topWall == false)
-                {
-                    this.grid[checkX][checkY].walkable = true;
-                    neighbours.push(this.grid[checkX][checkY]);
-                    continue;
-                }
-                if(node.walls.topWall == false)
-                {
-                    this.grid[checkX][checkY].walkable = true;
-                    neighbours.push(this.grid[checkX][checkY]);
-                    continue;
-                }
-
-                    
-                    
             }
         }
 
-        console.log(neighbours);
+        if(node.walls.rightWall == false)
+        {
+            console.log("Right Wall False");
+            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
+            {
+                if(this.grid[x][y + 1].walls.leftWall == false)
+                {
+                    console.log(x, y + 1);
+                    neighbours.push(this.grid[x][y + 1]);
+                }
+            }
+
+        }
+
+        if(node.walls.leftWall == false)
+        {
+            console.log("Left Wall False");
+            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
+            {
+                if(this.grid[x][y - 1].walls.rightWall == false)
+                {
+                    console.log(x, y - 1);
+                    neighbours.push(this.grid[x][y - 1]);
+                }
+            }
+
+        }
+                    
+            
+        
+
         return neighbours;
 
     }
