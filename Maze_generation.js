@@ -330,74 +330,102 @@ class astar
         return neighbours;
     }
 
+    closedListContainsNode(closedList, node)
+    {
+        for(let i = 0; i<closedList.length; i++)
+        {
+                if(closedList[i].rowNumber === node.rowNumber && closedList[i].colNumber === node.colNumber)
+                {
+                    return true;
+                }
+        }
+        
+        return false;
+    }
+
+    //Check if is it possible to go to a node,
+    //If there are walls present then its not possible
+    //If no walls present then it possible to go to that node
     check_if_walkable(node)
     {
         let neighbours = [];
-
-        console.log(node);
+        
         let x = node.colNumber;
         let y = node.rowNumber;
 
-        if(node.walls.topWall == false)
-        {
-            console.log("Top Wall False");
-            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
-            {
-                if(this.grid[x-1][y].walls.bottomWall == false)
-                {
-                    console.log(x - 1, y);
-                    neighbours.push(this.grid[x-1][y-1]);
-                }
-            }
+        console.log(x, y);
 
-        }
-        if(node.walls.bottomWall == false)
-        {
-            console.log("Bottom Wall False");
-            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
-            {
-                if(this.grid[x+1][y].walls.topWall == false)
-                {
-                    console.log(x + 1, y);
-                    neighbours.push(this.grid[x+1][y]);
-                }
-            }
-        }
-
-        if(node.walls.rightWall == false)
-        {
-            console.log("Right Wall False");
-            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
-            {
-                if(this.grid[x][y + 1].walls.leftWall == false)
-                {
-                    console.log(x, y + 1);
-                    neighbours.push(this.grid[x][y + 1]);
-                }
-            }
-
-        }
-
-        if(node.walls.leftWall == false)
-        {
-            console.log("Left Wall False");
-            if(x >=0 && x < this.cols && y >=0 && y < this.rows)
-            {
-                if(this.grid[x][y - 1].walls.rightWall == false)
-                {
-                    console.log(x, y - 1);
-                    neighbours.push(this.grid[x][y - 1]);
-                }
-            }
-
-        }
-                    
-            
-        
-
-        return neighbours;
 
     }
+    // check_if_walkable(node)
+    // {
+    //     let neighbours = [];
+
+    //     console.log(node);
+    //     let x = node.colNumber;
+    //     let y = node.rowNumber;
+
+    //     if(node.walls.topWall == false)
+    //     {
+    //         console.log("Top Wall False");
+    //         if(x >=0 && x < this.cols && y >=0 && y < this.rows)
+    //         {
+    //             if(this.grid[x-1][y].walls.bottomWall == false)
+    //             {
+    //                 console.log(x - 1, y);
+    //                 neighbours.push(this.grid[x-1][y-1]);
+    //             }
+    //         }
+
+    //     }
+    //     if(node.walls.bottomWall == false)
+    //     {
+    //         console.log("Bottom Wall False");
+    //         if(x >=0 && x < this.cols && y >=0 && y < this.rows)
+    //         {
+    //             if(this.grid[x+1][y].walls.topWall == false)
+    //             {
+    //                 console.log(x + 1, y);
+    //                 neighbours.push(this.grid[x+1][y]);
+    //             }
+    //         }
+    //     }
+
+    //     if(node.walls.rightWall == false)
+    //     {
+    //         console.log("Right Wall False");
+    //         if(x >=0 && x < this.cols && y >=0 && y < this.rows)
+    //         {
+    //             if(this.grid[x][y + 1].walls.leftWall == false)
+    //             {
+    //                 console.log(x, y + 1);
+    //                 neighbours.push(this.grid[x][y + 1]);
+    //             }
+    //         }
+
+    //     }
+
+    //     if(node.walls.leftWall == false)
+    //     {
+    //         console.log("Left Wall False");
+    //         if(x >=0 && x < this.cols && y >=0 && y < this.rows)
+    //         {
+    //             if(this.grid[x][y - 1].walls.rightWall == false)
+    //             {
+    //                 console.log(x, y - 1);
+    //                 neighbours.push(this.grid[x][y - 1]);
+    //             }
+    //         }
+
+    //     }      
+
+    //     if(neighbours.length > 0) return true;
+    //     else
+    //     {
+    //         return false;
+    //     }
+
+    // }
 
     findPath()
     {
@@ -429,6 +457,7 @@ class astar
 
             for(let neighbour=0; neighbour<neighbour.length; neighbour++)
             {
+                
 
             }
             
