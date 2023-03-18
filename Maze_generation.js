@@ -339,7 +339,7 @@ class astar
                     return true;
                 }
         }
-        
+
         return false;
     }
 
@@ -427,6 +427,22 @@ class astar
 
     // }
 
+    //Explanation to add later, for now explanation here
+    // https://www.youtube.com/watch?v=mZfyt03LDH4&t=369s
+    getDistanceBetweenNodes(nodeA, nodeB)
+    {
+        var distance_x = Math.abs(nodeA.colNumber - nodeB.colNumber);
+        var distance_y = Math.abs(nodeA.rowNumber - nodeB.rowNumber);
+
+        if(distance_x > distance_y)
+        {
+            return (14 * distance_y) + 10 * (distance_x - distance_y);
+        }
+
+        return (14 * distance_x) + 10 * (distance_y - distance_x);
+
+    }
+
     findPath()
     {
         this.open_set.push(this.start);
@@ -455,9 +471,13 @@ class astar
 
             neighbours = this.getNeighbours(this.current);
 
-            for(let neighbour=0; neighbour<neighbour.length; neighbour++)
+            //TODO: check if we can walk
+            for(let i=0; i<neighbours.length; i++)
             {
-                
+                if(this.closedListContainsNode(this.closed_set, neighbours[i]))
+                {
+                    continue;
+                }
 
             }
             
