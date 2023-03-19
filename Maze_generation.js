@@ -108,6 +108,7 @@ class Cell
         this.parentSize = parentSize;
         this.h_cost = 0;
         this.g_cost = 0;
+        this.parent;
         this.walkable = false;
         
         this.visited = false; //Used for checking if a cell has been added to stack or not
@@ -124,7 +125,8 @@ class Cell
 
     fcost()
     {
-        return this.f_cost = parseInt(this.h_cost) + parseInt(this.g_cost);
+        let f_cost = parseInt(this.h_cost) + parseInt(this.g_cost);
+        return f_cost;
     }
     
     checkNeighbours()
@@ -291,6 +293,7 @@ class astar
 {
     constructor(maze)
     {
+        this.count = 0;
         this.grid = maze.grid;
         this.start =  maze.start;
         this.end = maze.end;
@@ -317,8 +320,8 @@ class astar
                     continue;
                 }
 
-                let checkX = node.colNumber + x;
-                let checkY = node.rowNumber + y;
+                let checkY = node.colNumber + x;
+                let checkX = node.rowNumber + y;
 
                 if(checkX >=0 && checkX < this.cols && checkY >=0 && checkY < this.rows)
                 {
@@ -330,7 +333,7 @@ class astar
         return neighbours;
     }
 
-    closedListContainsNode(closedList, node)
+    setContainsNode(closedList, node)
     {
         for(let i = 0; i<closedList.length; i++)
         {
@@ -439,29 +442,43 @@ class astar
             return (14 * distance_y) + 10 * (distance_x - distance_y);
         }
 
-        return (14 * distance_x) + 10 * (distance_y - distance_x);
+        return parseInt((14 * distance_x) + 10 * (distance_y - distance_x));
 
     }
 
     findPath()
     {
+        this.start.g_cost = 0;
+        this.start.h_cost = this.getDistanceBetweenNodes(this.start, this.end) + this.getDistanceBetweenNodes(this.start, this.end);
+        this.open_set = [];
+        
         this.open_set.push(this.start);
-
-        while(this.open_set.length != 0)
+        this.current = this.open_set[0];
+        
+        
+        while(this.open_set.length > 0)
         {   
-            this.current = this.open_set[0];
+            
+            //console.log("Open set values", this.open_set);
+            //console.log(this.current);
             let index = 0;
-            for(let i=1; i<this.open_set.length; i++)
+            for(let i=0; i<this.open_set.length; i++)
             {
-                if(this.open_set[i].f_cost() < this.current.f_cost() || 
-                   this.open_set[i].f_cost() == this.current.f_cost() && this.open_set[i].h_cost < this.current.h_cost)
-                {
+                if(this.open_set[i].fcost() < this.current.fcost() || (this.open_set[i].fcost() == this.current.fcost() && this.open_set[i].h_cost < this.current.h_cost))
+                {             
                     this.current = this.open_set[i];
                     index = i;
+                    
+                    // let x = this.current.colNumber * 600/this.cols + 1;
+                    // let y = this.current.rowNumber * 600/this.cols + 1;
+                    // ctx.fillStyle = "green";
+                    // ctx.fillRect(x, y, 600/this.cols - 3, 600/this.cols - 3);
+                                 
                 }
+                
             }
-
-            this.open_set = this.open_set.splice(index, 1);
+            
+            this.open_set.splice(index, 1);
             this.closed_set.push(this.current);
 
             if(this.current.rowNumber == this.end.rowNumber && this.current.colNumber == this.end.colNumber)
@@ -469,23 +486,47 @@ class astar
                 return;
             }
 
-            neighbours = this.getNeighbours(this.current);
-
+            let neighbours = this.getNeighbours(this.current);
+            console.log(this.current);
+            console.log(neighbours);
             //TODO: check if we can walk
             for(let i=0; i<neighbours.length; i++)
             {
-                if(this.closedListContainsNode(this.closed_set, neighbours[i]))
+                if(this.setContainsNode(this.closed_set, neighbours[i]))
                 {
                     continue;
                 }
 
+                var newCostToNode = this.current.g_cost + this.getDistanceBetweenNodes(this.current, neighbours[i]);
+
+                if(newCostToNode < neighbours[i].g_cost || !this.setContainsNode(this.open_set, neighbours[i]))
+                {
+                    neighbours[i].g_cost = newCostToNode;
+                    neighbours[i].h_cost = this.getDistanceBetweenNodes(neighbours[i], this.end);
+                    neighbours[i].parent = this.current;
+                    
+                    if(!this.setContainsNode(this.open_set, neighbours[i]))
+                    {
+                        this.open_set.push(neighbours[i]);
+                        
+                    }
+                }
+
             }
             
+            
+            this.count++;
 
+            if(this.count == 1)
+            {
+                break;
+            }
         }
+        this.count = 0;
 
+        
     }
-
+    
 }
 
 let newMaze = new Maze(600, 10, 10);
