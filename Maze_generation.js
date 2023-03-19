@@ -458,9 +458,6 @@ class astar
         
         while(this.open_set.length > 0)
         {   
-            
-            //console.log("Open set values", this.open_set);
-            //console.log(this.current);
             let index = 0;
             for(let i=0; i<this.open_set.length; i++)
             {
@@ -469,10 +466,10 @@ class astar
                     this.current = this.open_set[i];
                     index = i;
                     
-                    // let x = this.current.colNumber * 600/this.cols + 1;
-                    // let y = this.current.rowNumber * 600/this.cols + 1;
-                    // ctx.fillStyle = "green";
-                    // ctx.fillRect(x, y, 600/this.cols - 3, 600/this.cols - 3);
+                    let x = this.current.colNumber * 600/this.cols + 1;
+                    let y = this.current.rowNumber * 600/this.cols + 1;
+                    ctx.fillStyle = "green";
+                    ctx.fillRect(x, y, 600/this.cols - 3, 600/this.cols - 3);
                                  
                 }
                 
@@ -481,14 +478,14 @@ class astar
             this.open_set.splice(index, 1);
             this.closed_set.push(this.current);
 
+            
             if(this.current.rowNumber == this.end.rowNumber && this.current.colNumber == this.end.colNumber)
             {
                 return;
             }
 
             let neighbours = this.getNeighbours(this.current);
-            console.log(this.current);
-            console.log(neighbours);
+
             //TODO: check if we can walk
             for(let i=0; i<neighbours.length; i++)
             {
@@ -514,15 +511,7 @@ class astar
 
             }
             
-            
-            this.count++;
-
-            if(this.count == 1)
-            {
-                break;
-            }
         }
-        this.count = 0;
 
         
     }
